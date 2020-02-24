@@ -1,0 +1,12 @@
+body {
+  background-color: #A9A9A9;
+  padding: 20px;
+}
+
+h1{
+  text-align: center;
+  margin: 0px;
+  text-transform: uppercase;
+  word-spacing: 3px;
+  font-family: 'courier';
+}
