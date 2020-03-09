@@ -2,15 +2,9 @@ body {
   margin: : 0px;
 }
 
-h1{
-  text-align: center;
-  margin: 0px;
-  text-transform: uppercase;
-  word-spacing: 3px;
-  font-family: 'courier';
+canvas {
+  display: block;
 }
-
-canvas { display: block; }
 
 #world {
   position: absolute;
