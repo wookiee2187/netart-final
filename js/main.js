@@ -99,9 +99,10 @@ function add_audio() {
 
       // play the audio
       oceanAmbientSound.play();
-    },
+    }
 
-  }
+  )
+}
 
   function createQuotes() {
     var loader = new THREE.FontLoader();
