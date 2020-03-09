@@ -1,3 +1,3 @@
 # netart-final
 
-currently only contains brainstormed ideas. 
+contains nearly finished project. 
