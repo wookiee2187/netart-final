@@ -11,11 +11,12 @@
 				width: 100%;
 				height: 100%;
 				overflow: hidden;
-				background: linear-gradient(#000000, #f7d9aa);
+				background: linear-gradient(#59332e, #000000);
 			}
 		</style>
 	</head>
 	<body>
+
 		<script src="js/three.js"></script>
 		<script src="js/PointerLockControls.js"></script>
 		<script src="js/OrbitControls.js"></script>
@@ -23,6 +24,10 @@
 		<script src="js/Inflate.min.js"></script>
 		<script src="js/stats.module.js"></script>
 		<div id="world"></div>
+		<span id="time">TIME</span>
+		<!-- Download library from https://github.com/jasonzissman/TimeMe.js/ -->
+		<script src="js/timeme.js"></script>
+
 
 		<script>
 		// DIV TO ADD THE FB, TWITTER, INSTA, AMAZON LOGOS with points
@@ -40,6 +45,7 @@
 			pink:0xF5986E,
 			brownDark:0x23190f,
 			blue:0x68c3c0,
+			black:0x000000
 			};
 
 
@@ -56,17 +62,39 @@
 		var mixer9;
 		var mixer10;
 		var mixer11;
+		var mixer12;
 
 
 		var ennemiesPool = [];
 		var all_obj = [];
 		var like2;
+		var list_img = ['imgs/insta.png','imgs/fb.png','imgs/google.jpeg','imgs/amazon.jpeg'];
+
 
 		//stats = new THREE.Stats();
 
 		function init() {
 			container = document.createElement( 'div' );
 			document.body.appendChild( container );
+
+
+			TimeMe.initialize({
+			    currentPageName: "home-page", // page name
+			    idleTimeoutInSeconds: 15 // time before user considered idle
+			});
+
+
+			window.onload = function(){
+			TimeMe.trackTimeOnElement('area-of-interest-1');
+			TimeMe.trackTimeOnElement('area-of-interest-2');
+			setInterval(function(){
+				var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
+				document.getElementById('time').textContent = timeSpentOnPage.toFixed(2);
+			}, 25);
+		}
+
+
+
 
 
 			// set up the scene, the camera and the renderer
@@ -95,6 +123,8 @@
 			load_ani8();
 			load_ani9();
 			load_ani10();
+			load_ani11();
+			load_ani12();
 			// add the objects
 			//createPlane();
 			createGround();
@@ -138,7 +168,7 @@ function createQuotes(){
 			var mesh = new THREE.Mesh( geometry, textMaterial );
 			mesh.position.y = 200;
 			mesh.scale.set(0.2,0.2,0.2);
-			mesh.position.x = -150;
+			mesh.position.x = -170;
 
 			//geometry.position.x = 50;
 			//his.mesh = new THREE.Mesh(geometry, mat);
@@ -229,17 +259,18 @@ function createScene() {
 	// container we created in the HTML
 	container = document.getElementById('world');
 	container.appendChild(renderer.domElement);
+	//container.appendChild(document.getElementById('time'));
 
-	controls = new THREE.OrbitControls( camera, renderer.domElement );
-	controls.target.set( 0, 100, 0 );
-	controls.update();
+	//controls = new THREE.OrbitControls( camera, renderer.domElement );
+	//controls.target.set( 0, 100, 0 );
+	//controls.update();
 
 	// Listen to the screen: if the user resizes it
 	// we have to update the camera and the renderer size
 	window.addEventListener('resize', handleWindowResize, false);
 
 	stats = new THREE.Stats();
-	container.appendChild( stats.dom );
+	//container.appendChild( stats.dom );
 
 	fb = new THREE.Object3D()
 }
@@ -297,19 +328,23 @@ function createGround(){
 	scene.add(ground.mesh);
 }
 
-Cloud = function(){
+Cloud = function(path){
 	// Create an empty container that will hold the different parts of the cloud
 	this.mesh = new THREE.Object3D();
 
 	// create a cube geometry;
 	// this shape will be duplicated to create the cloud
-	var geom = new THREE.CylinderGeometry(30,30,20,20,10);
+	var geom = new THREE.CylinderGeometry(25,25,25,25,10);
 	//oxGeometry(20,20,20);
 
 	// create a material; a simple white material will do the trick
-	var mat = new THREE.MeshPhongMaterial({
-		color:Colors.blue,
+	/*var mat = new THREE.MeshPhongMaterial({
+		color:Colors.brownDark,
 	});
+	*/
+//'imgs/insta.png'
+	var mat = new THREE.MeshBasicMaterial({map:THREE.ImageUtils.loadTexture(path)});
+
 
 	// duplicate the geometry a random number of times
 	var nBlocs = 3+Math.floor(Math.random()*3);
@@ -338,6 +373,12 @@ Cloud = function(){
 	}
 }
 
+function getRandomInt1(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+}
+
 // Define a Sky Object
 Sky = function(){
 	// Create an empty container
@@ -352,7 +393,8 @@ Sky = function(){
 
 	// create the clouds
 	for(var i=0; i<this.nClouds; i++){
-		var c = new Cloud();
+		pick = getRandomInt1(0,4);
+		var c = new Cloud(list_img[pick]);
 
 		// set the rotation and the position of each cloud;
 		// for that we use a bit of trigonometry
@@ -392,6 +434,14 @@ function createSky(){
 	scene.add(sky.mesh);
 }
 
+var sky2;
+
+function createSky2(){
+	sky = new Sky();
+	sky.mesh.position.y = -600;
+	scene.add(sky.mesh);
+}
+
 var money = function() {
 	this.mesh = new THREE.Object3D();
 	this.mesh.name = "like";
@@ -410,13 +460,8 @@ function getRandomInt(max) {
 
 var All_money = function() {
 	this.mesh = new THREE.Object3D();
-	this.nMoney = 40;
+	this.nMoney = 0;
 
-	// To distribute the clouds consistently,
-	// we need to place them according to a uniform angle
-	var stepAngle = Math.PI*2 / this.nClouds;
-
-	// create the clouds
 	for(var i=0; i<this.nMoney; i++){
 		var m = new money();
 		m.mesh.scale.set(1,1,1);
@@ -499,7 +544,7 @@ var search = function() {
 	this.mesh = new THREE.Object3D();
 	this.mesh.name = "search";
 	var body = new THREE.BoxGeometry(15,15,15);
-  var bodyMat = new THREE.MeshBasicMaterial({map:THREE.ImageUtils.loadTexture('imgs/search.jpg')});
+  var bodyMat = new THREE.MeshBasicMaterial({map:THREE.ImageUtils.	loadTexture('imgs/gsearch.png')});
   var body = new THREE.Mesh(body, bodyMat);
   body.position.set(32,-12,0);
   this.mesh.add(body);
@@ -915,8 +960,8 @@ function load_ani6(){
 
 
 		object.scale.set(.25,.25,.25);
-		object.position.x = 0;
-		object.position.z = -70;
+		object.position.x = -70;
+		object.position.z = -40;
 		object.rotation.y = 1.75;
 
 		object.traverse( function ( child ) {
@@ -953,7 +998,7 @@ function load_ani7(){
 
 
 		object.scale.set(.25,.25,.25);
-		object.position.x = 10;
+		object.position.x = -30;
 		object.position.z = -40;
 		object.rotation.y = 1.75;
 
@@ -991,8 +1036,8 @@ function load_ani8(){
 
 
 		object.scale.set(.25,.25,.25);
-		object.position.x = 10;
-		object.position.z = -25;
+		object.position.x = 0;
+		object.position.z = -40;
 		object.rotation.y = 1.75;
 
 		object.traverse( function ( child ) {
@@ -1029,8 +1074,8 @@ function load_ani9(){
 
 
 		object.scale.set(.25,.25,.25);
-		object.position.x = -30;
-		object.position.z = -30;
+		object.position.x = -70;
+		object.position.z = -70;
 		object.rotation.y = 1.75;
 
 		object.traverse( function ( child ) {
@@ -1050,8 +1095,8 @@ function load_ani9(){
 }
 function load_ani10(){
 
-	var loader11 = new THREE.FBXLoader();
-	loader11.load( 'models/Running.fbx', function ( object ) {
+	var loader = new THREE.FBXLoader();
+	loader.load( 'models/Running.fbx', function ( object ) {
 
 		mixer10 = new THREE.AnimationMixer( object );
 		mixer10.addEventListener( 'loop', function( e ) {} ); // properties of e: type, action and loopDelta
@@ -1067,8 +1112,88 @@ function load_ani10(){
 
 
 		object.scale.set(.25,.25,.25);
-		object.position.x = -85;
-		object.position.z = -85;
+		object.position.x = -30;
+		object.position.z = -70;
+		object.rotation.y = 1.75;
+
+		object.traverse( function ( child ) {
+
+			if ( child.isMesh ) {
+
+				child.castShadow = true;
+				child.receiveShadow = true;
+
+			}
+
+		} );
+
+		scene.add( object );
+
+	} );
+}
+
+function load_ani11(){
+
+	var loader2 = new THREE.FBXLoader();
+	loader2.load( 'models/Running.fbx', function ( object ) {
+		console.log(mix);
+		console.log(mixer);
+		mixer11 = new THREE.AnimationMixer( object );
+		mixer11.addEventListener( 'loop', function( e ) {} ); // properties of e: type, action and loopDelta
+
+		var targetY = normalize(mousePos.y, -1, 1, -110, 100);
+
+		// update the airplane's position
+		object.position.y = targetY;
+
+		var action = mixer11.clipAction( object.animations[ 0 ] );
+		action.play();
+		//var targetX = normalize(mousePos.x, -1, 1, 0, 0);
+
+
+		object.scale.set(.25,.25,.25);
+		object.position.x = -50;
+		object.position.z = -70;
+		object.rotation.y = 1.75;
+
+		object.traverse( function ( child ) {
+
+			if ( child.isMesh ) {
+
+				child.castShadow = true;
+				child.receiveShadow = true;
+
+			}
+
+		} );
+
+		scene.add( object );
+
+	} );
+}
+
+function load_ani12(){
+
+	var loader2 = new THREE.FBXLoader();
+	loader2.load( 'models/Running.fbx', function ( object ) {
+		console.log(mix);
+		console.log(mixer);
+		mixer12 = new THREE.AnimationMixer( object );
+		mixer12.addEventListener( 'loop', function( e ) {} ); // properties of e: type, action and loopDelta
+
+		var targetY = normalize(mousePos.y, -1, 1, -110, 100);
+
+		// update the airplane's position
+		object.position.y = targetY;
+
+		var action = mixer12.clipAction( object.animations[ 0 ] );
+		action.play();
+		//var targetX = normalize(mousePos.x, -1, 1, 0, 0);
+
+
+		object.scale.set(.25,.25,.25);
+		object.position.x = 0;
+		object.position.z = -70;
 		object.rotation.y = 1.75;
 
 		object.traverse( function ( child ) {
@@ -1088,6 +1213,7 @@ function load_ani10(){
 }
 
 
+
 function loop(){
 
 	ground.mesh.rotation.z += .01;
@@ -1096,9 +1222,10 @@ function loop(){
 	love.mesh.rotation.x += 0.25;
 	shop.mesh.rotation.x += 0.25;
 	search.mesh.rotation.x += 0.25;
-	all_money.mesh.position.y += 5;
+	all_money.mesh.position.y += 3;
 
-	if (all_money.mesh.position.y > 100) all_money.mesh.position.y = 0;
+
+	if (all_money.mesh.position.y > 100) all_money.mesh.position.y = getRandomInt1(-50,0);
 
 	renderer.render(scene, camera);
 	var delta = clock.getDelta();
@@ -1122,6 +1249,10 @@ function loop(){
 	if (mixer9) mixer9.update(delta);
 
 	if (mixer10) mixer10.update(delta);
+
+	if (mixer11) mixer10.update(delta);
+
+	if (mixer12) mixer10.update(delta);
 
 	renderer.render( scene, camera );
 
@@ -1210,7 +1341,7 @@ function createLights() {
 	// A hemisphere light is a gradient colored light;
 	// the first parameter is the sky color, the second parameter is the ground color,
 	// the third parameter is the intensity of the light
-	hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9)
+	hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .4)
 
 	// A directional light shines from a specific direction.
 	// It acts like the sun, that means that all the rays produced are parallel.
