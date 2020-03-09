@@ -75,6 +75,12 @@
 			// add the lights
 			createLights();
 			createLike();
+			createLove();
+			createShop();
+			createSearch();
+
+			createQuotes();
+			//createTweet();
 			//createPlayer();
 			//createCarrot();
 
@@ -108,6 +114,36 @@
 		}
 
 
+function createQuotes(){
+		var loader = new THREE.FontLoader();
+
+		loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+
+			var geometry = new THREE.TextGeometry( 'it is no longer enough to automate information flows about us; the goal now is to automate us.', {
+				font: font,
+				size: 30,
+				height: 5,
+				curveSegments: 12,
+				bevelEnabled: true,
+				bevelThickness: 10,
+				bevelSize: 8,
+				bevelOffset: 0,
+				bevelSegments: 5
+			} );
+			var textMaterial = new THREE.MeshPhongMaterial(
+				{ color: 0xff0000, specular: 0xffffff }
+			);
+
+			var mesh = new THREE.Mesh( geometry, textMaterial );
+			mesh.position.y = 200;
+			mesh.scale.set(0.2,0.2,0.2);
+			mesh.position.x = -150;
+
+			//geometry.position.x = 50;
+			//his.mesh = new THREE.Mesh(geometry, mat);
+			scene.add(mesh);
+		} );
+	}
 
 
 		var scene,
@@ -370,9 +406,68 @@ function createLike(){
 	like = new like();
 	like.mesh.scale.set(1,1,1);
 	like.mesh.position.y = 100;
-	like.mesh.position.x = 30;
+	like.mesh.position.x = 40;
 	scene.add(like.mesh);
 }
+
+var love = function() {
+	this.mesh = new THREE.Object3D();
+	this.mesh.name = "love";
+	var body = new THREE.BoxGeometry(15,15,15);
+  var bodyMat = new THREE.MeshBasicMaterial({map:THREE.ImageUtils.loadTexture('imgs/love.png')});
+  var body = new THREE.Mesh(body, bodyMat);
+  body.position.set(32,-12,0);
+  this.mesh.add(body);
+}
+var love;
+
+function createLove(){
+	love = new love();
+	love.mesh.scale.set(1,1,1);
+	love.mesh.position.y = 100;
+	love.mesh.position.x = 60;
+	scene.add(love.mesh);
+}
+
+var shop = function() {
+	this.mesh = new THREE.Object3D();
+	this.mesh.name = "shop";
+	var body = new THREE.BoxGeometry(15,15,15);
+  var bodyMat = new THREE.MeshBasicMaterial({map:THREE.ImageUtils.loadTexture('imgs/download.png')});
+  var body = new THREE.Mesh(body, bodyMat);
+  body.position.set(32,-12,0);
+  this.mesh.add(body);
+}
+var shop;
+
+function createSearch(){
+	shop = new shop();
+	shop.mesh.scale.set(1,1,1);
+	shop.mesh.position.y = 125;
+	shop.mesh.position.x = 40;
+	scene.add(shop.mesh);
+}
+
+var search = function() {
+	this.mesh = new THREE.Object3D();
+	this.mesh.name = "search";
+	var body = new THREE.BoxGeometry(15,15,15);
+  var bodyMat = new THREE.MeshBasicMaterial({map:THREE.ImageUtils.loadTexture('imgs/search.jpg')});
+  var body = new THREE.Mesh(body, bodyMat);
+  body.position.set(32,-12,0);
+  this.mesh.add(body);
+}
+var search;
+
+function createShop(){
+	search = new search();
+	search.mesh.scale.set(1,1,1);
+	search.mesh.position.y = 125;
+	search.mesh.position.x = 60;
+	scene.add(search.mesh);
+}
+
+
 
 var player = function() {
 	this.mesh = new THREE.Object3D();
@@ -950,7 +1045,10 @@ function loop(){
 
 	ground.mesh.rotation.z += .01;
 	sky.mesh.rotation.z += .01;
-	like.mesh.rotation.x += 0.1;
+	like.mesh.rotation.x += 0.25;
+	love.mesh.rotation.x += 0.25;
+	shop.mesh.rotation.x += 0.25;
+	search.mesh.rotation.x += 0.25;
 
 	renderer.render(scene, camera);
 	var delta = clock.getDelta();
