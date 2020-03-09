@@ -64,13 +64,11 @@ function init() {
   // add ground and sky
   createGround();
   createSky();
-  add_audio();
 
   // start a loop that will update the objects' positions
   // and render the scene on each frame
   loop();
 }
-
   function createQuotes() {
     var loader = new THREE.FontLoader();
 
