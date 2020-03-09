@@ -5,6 +5,9 @@ Last updated - March 9th 2020
 */
 
 // Colors used for objects
+//some of color scheme attributed to -
+//https://tympanus.net/codrops/2016/04/26/the-aviator-animating-basic-3d-scene-threejs/
+// Author - Karim Maaloul
 var Colors = {
   brown: 0x59332e,
   pink: 0xF5986E,
@@ -180,7 +183,7 @@ function createScene() {
   container.appendChild(renderer.domElement);
   //controls removed
   //controls = new THREE.OrbitControls( camera, renderer.domElement );
-  //controls.target.set( 0, 0, 0 );
+  //controls.target.set( 0, 100, 0 );
   //controls.update();
   // resize
   window.addEventListener('resize', handleWindowResize, false);
