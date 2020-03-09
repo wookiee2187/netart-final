@@ -78,6 +78,7 @@
 			createLove();
 			createShop();
 			createSearch();
+			createAllmoney();
 
 			createQuotes();
 			//createTweet();
@@ -390,6 +391,52 @@ function createSky(){
 	sky.mesh.position.y = -600;
 	scene.add(sky.mesh);
 }
+
+var money = function() {
+	this.mesh = new THREE.Object3D();
+	this.mesh.name = "like";
+	var body = new THREE.BoxGeometry(10,10,1);
+  var bodyMat = new THREE.MeshBasicMaterial({map:THREE.ImageUtils.loadTexture('imgs/money.png')});
+  var body = new THREE.Mesh(body, bodyMat);
+  body.position.set(0,50,10);
+  this.mesh.add(body);
+}
+var money;
+
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+var All_money = function() {
+	this.mesh = new THREE.Object3D();
+	this.nMoney = 40;
+
+	// To distribute the clouds consistently,
+	// we need to place them according to a uniform angle
+	var stepAngle = Math.PI*2 / this.nClouds;
+
+	// create the clouds
+	for(var i=0; i<this.nMoney; i++){
+		var m = new money();
+		m.mesh.scale.set(1,1,1);
+		m.mesh.position.y = getRandomInt(30);
+		m.mesh.position.x = getRandomInt(100);
+		this.mesh.add(m.mesh);
+	}
+
+
+}
+
+var all_money;
+
+function createAllmoney(){
+	all_money = new All_money();
+	all_money.mesh.position.x = -50;
+	all_money.mesh.position.y = 0;
+	scene.add(all_money.mesh);
+}
+
 
 var like = function() {
 	this.mesh = new THREE.Object3D();
@@ -1049,6 +1096,9 @@ function loop(){
 	love.mesh.rotation.x += 0.25;
 	shop.mesh.rotation.x += 0.25;
 	search.mesh.rotation.x += 0.25;
+	all_money.mesh.position.y += 5;
+
+	if (all_money.mesh.position.y > 100) all_money.mesh.position.y = 0;
 
 	renderer.render(scene, camera);
 	var delta = clock.getDelta();
