@@ -1,6 +1,5 @@
 body {
-  background-color: #A9A9A9;
-  padding: 20px;
+  margin: : 0px;
 }
 
 h1{
@@ -9,4 +8,14 @@ h1{
   text-transform: uppercase;
   word-spacing: 3px;
   font-family: 'courier';
+}
+
+canvas { display: block; }
+
+#world {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(#59332e, #000000);
 }
