@@ -1,3 +1,9 @@
+/*
+Purpose - Main JavaScript file for netart final
+Author - Neha Lingareddy
+Last updated - March 9th 2020
+*/
+
 // Colors used for objects
 var Colors = {
   brown: 0x59332e,
@@ -63,8 +69,38 @@ function init() {
   // Author - Karim Maaloul
   createGround();
   createSky();
+  // create audio
+  createAudio();
   // start a loop that will update the object positions
   loop();
+}
+
+// function attributed to -
+// https://threejs.org/docs/index.html#api/en/loaders/AudioLoader
+function createAudio() {
+  // instantiate a listener
+  var audioListener = new THREE.AudioListener();
+  // add the listener to the camera
+  camera.add(audioListener);
+  // instantiate audio object
+  var background = new THREE.Audio(audioListener);
+  // add the audio object to the scene
+  scene.add(background);
+  // instantiate a loader
+  var loader = new THREE.AudioLoader();
+  // load a resource
+  loader.load(
+    // resource URL - https://freemusicarchive.org/genre/Glitch
+    // Artist - Csum, Track - Hypolink (loopy mix), Album - Anaerobica
+    'sounds/music.mp3',
+    // onLoad callback
+    function(audioBuffer) {
+      // set the audio object buffer to the loaded object
+      background.setBuffer(audioBuffer);
+      // play the audio
+      background.play();
+    }
+  )
 }
 
 function createQuote() {
@@ -148,11 +184,6 @@ function createScene() {
   //controls.update();
   // resize
   window.addEventListener('resize', handleWindowResize, false);
-
-  stats = new THREE.Stats();
-  //container.appendChild( stats.dom );
-
-  fb = new THREE.Object3D()
 }
 
 function handleWindowResize() {
@@ -163,9 +194,6 @@ function handleWindowResize() {
   camera.aspect = WIDTH / HEIGHT;
   camera.updateProjectionMatrix();
 }
-
-
-
 
 Ground = function() {
   // create the geometry (shape) of the cylinder
@@ -230,45 +258,34 @@ function getRandomInt1(min, max) {
 Sky = function() {
   // Create an empty container
   this.mesh = new THREE.Object3D();
-
   // choose a number of clouds to be scattered in the sky
   this.nClouds = 100;
-
   // To distribute the clouds consistently,
   // we need to place them according to a uniform angle
   var stepAngle = Math.PI * 2 / this.nClouds;
-
   // create the clouds
   for (var i = 0; i < this.nClouds; i++) {
     pick = getRandomInt1(0, 4);
     var c = new Cloud(list_img[pick]);
-
     // set the rotation and the position of each cloud;
     // for that we use a bit of trigonometry
     var a = stepAngle * i; // this is the final angle of the cloud
     var h = 750 + Math.random() * 200; // this is the distance between the center of the axis and the cloud itself
-
-    // Trigonometry!!! I hope you remember what you've learned in Math :)
-    // in case you don't:
-    // we are simply converting polar coordinates (angle, distance) into Cartesian coordinates (x, y)
     c.mesh.position.y = Math.sin(a) * h;
     c.mesh.position.x = Math.cos(a) * h;
-
     // rotate the cloud according to its position
     c.mesh.rotation.z = a + Math.PI / 2;
-
     // for a better result, we position the clouds
     // at random depths inside of the scene
     c.mesh.position.z = -400 - Math.random() * 400;
-
     // we also set a random scale for each cloud
     var s = 1 + Math.random() * 2;
     c.mesh.scale.set(s, s, s);
-
     // do not forget to add the mesh of each cloud in the scene
     this.mesh.add(c.mesh);
   }
 }
+
 var sky;
 
 function createSky() {
@@ -328,6 +345,7 @@ var like = function() {
   body.position.set(32, -12, 0);
   this.mesh.add(body);
 }
+
 var like;
 
 function createLike() {
