@@ -71,39 +71,6 @@ function init() {
   loop();
 }
 
-function add_audio() {
-  // instantiate a listener
-  var audioListener = new THREE.AudioListener();
-
-  // add the listener to the camera
-  camera.add(audioListener);
-
-  // instantiate audio object
-  var oceanAmbientSound = new THREE.Audio(audioListener);
-
-  // add the audio object to the scene
-  scene.add(oceanAmbientSound);
-
-  // instantiate a loader
-  var loader = new THREE.AudioLoader();
-
-  // load a resource
-  loader.load(
-    // resource URL
-    'audio/ambient_ocean.ogg',
-
-    // onLoad callback
-    function(audioBuffer) {
-      // set the audio object buffer to the loaded object
-      oceanAmbientSound.setBuffer(audioBuffer);
-
-      // play the audio
-      oceanAmbientSound.play();
-    }
-
-  )
-}
-
   function createQuotes() {
     var loader = new THREE.FontLoader();
 
